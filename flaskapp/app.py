@@ -39,19 +39,19 @@ def consul_template():
     return render_template('consul-template.html', **context)
 
 
-@app.route('/layer4-connect/')
-def layer4_connect():
-    """ Layer 4 demo techniques.  Probably needs one more layer of abstraction.
+@app.route('/transt/')
+def transit():
+    """ Transit Encryption.
     """
     context = {'active_services' : config.active_services,
                'img_width'  : config.img_width,
                'img_height' : config.img_height,
               }
-    return render_template('layer4-connect.html', **context)
+    return render_template('transit.html', **context)
 
-@app.route('/layer7-routing/')
-def layer7_routing():
-    return render_template('layer7-routing.html')
+@app.route('/s3bucketg/')
+def s3bucket():
+    return render_template('s3bucket.html')
 
 @app.route('/img/<service>')
 def get_image(service):
