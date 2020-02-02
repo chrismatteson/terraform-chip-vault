@@ -7,12 +7,15 @@
     <div class="row my-5">
       <div class="col-sm mx-auto my-auto">
         <p> This is a Consul Connect Layer 4 Demo.</p>
-        <p> Welcome to the Petshop.   Each window below loads data from an instance of a picture service related
-        to a specific animal.   This web application binds to a localhost port and then sends requests for each pet
-        to a locally bound upstream that's unique for each endpoint.   
-        <p> Consul Connect automatically creates certificates for the proxy endpoints to both identify and secure traffic
-        between endpoints.   It also allows for setting Intentions which either allows or disallows connections
-        to occur.
+        <form method="POST" id="transit">
+          Text: <input type="text" name="text">
+          Encrypt/Decrypt: <input type="" name="command">
+          <input type="submit" value "Submit">
+        </form>
+        <select name="command" form="transit">
+          <option value="encrypt">Encrypt</option>
+          <option value="decrypt">Decrypt</option>
+        </select>
       </div>
     </div>
     <div class="row my-5">

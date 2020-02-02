@@ -1,21 +1,21 @@
 variable "scenario_1_users" {
-  type = list
+  type    = list
   default = []
 }
 variable "scenario_2_users" {
-  type = list
+  type    = list
   default = []
 }
 variable "scenario_3_users" {
-  type = list
+  type    = list
   default = []
 }
 variable "scenario_4_users" {
-  type = list
+  type    = list
   default = []
 }
 variable "scenario_5_users" {
-  type = list
+  type    = list
   default = []
 }
 variable "tags" {

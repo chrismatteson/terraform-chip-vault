@@ -25,8 +25,6 @@ app.config['MYSQL_USER'] = 'root'
 app.config['MYSQL_PASSWORD'] = 'root'
 app.config['MYSQL_DB'] = 'MyDB'
 
-mysql = MySQL(app)
-
 @app.route('/healthz')
 def healthz():
     return 'OK'
@@ -42,11 +40,12 @@ def consul_template():
     try:
         with app.open_resource(context_file, 'r') as IF:
             context=json.load(IF)
-        cur = mysql.connection.cursor()
-        cur.execute("SELECT CURRENT_USER()")
-        mysql.connection.commit()
+        db = pymysql.connect("localhost","foo","foobarbaz","USER" )
+        cursor = db.cursor()
+        cursor.execute("SELECT CURRENT_USER()")
         data = cursor.fetchone()
-        context=json.oad(data)
+        print(data)
+        context=json.load(data)
         cur.close()
     except Exception as e:
         print("JSON Input file {} missing".format(context_file))
@@ -64,6 +63,23 @@ def transit():
               }
     return render_template('transit.html', **context)
 
+@app.route('/transit/', methods=['POST'])
+def transit_post():
+    """ Transit Encryption.
+    """
+    context = {'active_services' : config.active_services,
+               'img_width'  : config.img_width,
+               'img_height' : config.img_height,
+              }
+    text=request.form['text']
+    command=request.form['command']
+    run_command = "vaulthook.sh {} {}".format(command, text)
+    try:
+      result = subprocess.check_output(
+        [run_command], shell=True)
+      except subprocess.CalledProcessError as e:
+        return "An error occurred while trying to fetch task status updates."
+    return result
 @app.route('/s3bucket/')
 def s3bucket():
     return render_template('s3bucket.html')

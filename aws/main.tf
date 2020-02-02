@@ -4,35 +4,35 @@ provider "aws" {
 }
 
 resource "aws_iam_user" "s1_user" {
-  count = length(var.scenario_1_users)
+  count         = length(var.scenario_1_users)
   name          = element(var.scenario_1_users, count.index)
   path          = "/"
   force_destroy = true
 }
 
 resource "aws_iam_user" "s2_user" {
-  count = length(var.scenario_2_users)
+  count         = length(var.scenario_2_users)
   name          = element(var.scenario_2_users, count.index)
   path          = "/"
   force_destroy = true
 }
 
 resource "aws_iam_user" "s3_user" {
-  count = length(var.scenario_3_users)
+  count         = length(var.scenario_3_users)
   name          = element(var.scenario_3_users, count.index)
   path          = "/"
   force_destroy = true
 }
 
 resource "aws_iam_user" "s4_user" {
-  count = length(var.scenario_4_users)
+  count         = length(var.scenario_4_users)
   name          = element(var.scenario_4_users, count.index)
   path          = "/"
   force_destroy = true
 }
 
 resource "aws_iam_user" "s5_user" {
-  count = length(var.scenario_5_users)
+  count         = length(var.scenario_5_users)
   name          = element(var.scenario_5_users, count.index)
   path          = "/"
   force_destroy = true
