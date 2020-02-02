@@ -18,6 +18,13 @@ BIND_PORT=8000
 
 app = Flask(__name__)
 
+app.config['MYSQL_HOST'] = 'localhost'
+app.config['MYSQL_USER'] = 'root'
+app.config['MYSQL_PASSWORD'] = 'root'
+app.config['MYSQL_DB'] = 'MyDB'
+
+mysql = MySQL(app)
+
 @app.route('/healthz')
 def healthz():
     return 'OK'
@@ -29,10 +36,14 @@ def index():
 @app.route('/consul-template/')
 def consul_template():
     context={}
-    context_file='static/holy_grail.json'
+    context_file='mysqldbcreds.json'
     try:
         with app.open_resource(context_file, 'r') as IF:
             context=json.load(IF)
+        cur = mysql.connection.cursor()
+        cur.execute("SELECT CURRENT_USER()")
+        mysql.connection.commit()
+        cur.close()
     except Exception as e:
         print("JSON Input file {} missing".format(context_file))
         print(e)

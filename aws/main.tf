@@ -91,6 +91,7 @@ resource "aws_instance" "web" {
   key_name      = var.ssh_key_name
 
   user_data = <<EOF
+#!/bin/bash
 sudo apt-get update -y
 sudo apt-get install -y python3-flask
 sudo git clone https://github.com/chrismatteson/terraform-chip-vault
