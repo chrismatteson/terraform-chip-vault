@@ -1,0 +1,64 @@
+<!doctype html>
+<html lang="en">
+
+{% set navigation_bar = [
+    ('/', 'index', 'Home'),
+    ('/consul-template/', 'consul-template', 'Consul Template'),
+    ('/transit/', 'transit', 'Transit Encryption'),
+    ('/s3bucket/', 's3bucket', 'S3 Bucket')
+] -%}
+
+{% set active_page = active_page|default('index') -%}
+
+<head>
+  <!-- Required meta tags -->
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+  <!-- Bootstrap CSS -->
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+    integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+  {% block head %}
+  {% endblock %}
+  <title>{% block title %}{% endblock %}</title>
+</head>
+<body>
+  <div class="container">
+    <div class="row mb-5 justify-content-md-center">
+      <div class="col-sm my-auto">
+        <nav class="navbar navbar-expand-lg navbar-light bg-light">
+          <a class="navbar-brand" href="#">HashiCorp Consul Demo</a>
+          <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+          </button>
+          <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <ul class="navbar-nav mr-auto">
+                {% for href, id, caption in navigation_bar %}
+                <li class="nav-item {% if id == active_page %}active{% endif %}">
+                    <a class="nav-link" href="{{ href|e }}">{{ caption|e }}</a>
+                </li>
+                {% endfor %}
+            </ul>
+          </div>
+        </nav>
+      </div>
+    </div>
+    <div id="content">
+    {% block content %} 
+    {% endblock %}
+    </div>
+  </div>
+  <!-- Optional JavaScript -->
+  <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+  <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
+    integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"
+    crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"
+    integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1"
+    crossorigin="anonymous"></script>
+  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
+    integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
+    crossorigin="anonymous"></script>
+</body>
+</html>

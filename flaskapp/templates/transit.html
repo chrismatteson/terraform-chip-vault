@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+{% set active_page = "layer4-connect" %}
+
+
+{% block title %}Consul Layer 4 Connect Demo{% endblock  %}
+{% block content %}
+    <div class="row my-5">
+      <div class="col-sm mx-auto my-auto">
+        <p> This is a Consul Connect Layer 4 Demo.</p>
+        <p> Welcome to the Petshop.   Each window below loads data from an instance of a picture service related
+        to a specific animal.   This web application binds to a localhost port and then sends requests for each pet
+        to a locally bound upstream that's unique for each endpoint.   
+        <p> Consul Connect automatically creates certificates for the proxy endpoints to both identify and secure traffic
+        between endpoints.   It also allows for setting Intentions which either allows or disallows connections
+        to occur.
+      </div>
+    </div>
+    <div class="row my-5">
+      {% for service in active_services %}
+      <div class="col-sm mx-auto my-auto">
+      <H1>{{ service }}</H1>
+      <img src="/img/{{ service }}" width="{{ img_width }}" height="{{ img_height }}">
+      </div>
+      {% endfor %}
+    </div>
+{% endblock %}

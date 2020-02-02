@@ -1,0 +1,54 @@
+{% extends "base.html" %}
+{% set active_page = "consul-template" %}
+
+
+{% block title %}Consul Consul-Template Demo{% endblock  %}
+{% block content %}
+    <div class="row my-5">
+      <div class="col-sm-4 mx-auto my-auto">
+      <p>{{ bridgekeeper }}</p>
+      </div>
+      <div class="col-sm mx-auto my-auto">
+        <table class="table">
+          <thead>
+            <tr>
+              <th scope="col">Bridgekeeper</th>
+              <th scope="col">Knight</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <th scope="row">{{ question1 }}</th>
+              <td>{{ answer1 }}</td>
+            </tr>
+            <tr>
+              <th scope="row">{{ question2 }}</th>
+              <td>{{ answer2 }}</td>
+            </tr>
+            <tr>
+              <th scope="row">{{ question3 }}</th>
+              <td>{{ answer3 }}</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+    <div class="row my-5">
+      <div class="col-sm mx-auto my-auto">
+        <p> This page is created by loading a file created by Consul Template.  
+        <p> Consul template, when run in daemon mode, will watch a key or set of keys and will update values 
+            in the template on the fly. This usually only takes milliseconds to reload and can be a 
+            powerful way of updating configuration values in application files without making them aware 
+            they are getting data from Consul.</p>
+        <p> If you're wondering why not just read the data directly from Consul, it's because this is demonstrating
+            The actual consul-template application in action.   
+      </div>
+    </div>
+    <div class="row my-5">
+      <div class="col-sm mx-auto my-auto">
+        <p>Trivia: Python the language is named after Monty Python!</p>
+        <p>See: <a href='https://docs.python.org/2/faq/general.html#why-is-it-called-python'>Why is it called Python?</a></p>
+      </div>
+    </div>
+
+{% endblock %}
