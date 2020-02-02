@@ -2,13 +2,14 @@ import os
 import glob
 import random
 from flask import Flask
-from flask import render_template, send_file, current_app
+from flask import render_template, send_file, current_app, request
 import json
 import requests
 import config
 import io
 import pandas as pd
 import pymysql
+import subprocess
 
 # Be the main frame for all applications
 # Loads static page into one tab
@@ -73,12 +74,12 @@ def transit_post():
               }
     text=request.form['text']
     command=request.form['command']
-    run_command = "vaulthook.sh {} {}".format(command, text)
+    run_command = "./vaulthook.sh {} {}".format(command, text)
     try:
       result = subprocess.check_output(
         [run_command], shell=True)
-      except subprocess.CalledProcessError as e:
-        return "An error occurred while trying to fetch task status updates."
+    except subprocess.CalledProcessError as e:
+      return "An error occurred while trying to fetch task status updates."
     return result
 @app.route('/s3bucket/')
 def s3bucket():
