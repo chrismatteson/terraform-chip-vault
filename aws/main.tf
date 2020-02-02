@@ -91,12 +91,11 @@ resource "aws_instance" "web" {
   key_name      = var.ssh_key_name
 
   user_data = <<EOF
-apt-get update -y
-apt-get install -y python3-flask
-git clone https://github.com/grove-mountain/consul-demo-gateway
-cd consul-demo-gateway/app
-export FLASK_APP=app.py
-flask run
+sudo apt-get update -y
+sudo apt-get install -y python3-flask
+git clone https://github.com/chrismatteson/terraform-chip-vault
+cd terraform-chip-vault/flaskapp
+python3 app.py
 EOF
 
   tags = {
@@ -104,6 +103,3 @@ EOF
   }
 }
 
-output "password" {
-  value = aws_iam_user_login_profile.user.*.encrypted_password
-}
