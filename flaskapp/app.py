@@ -7,6 +7,7 @@ import json
 import requests
 import config
 import io
+from flask_mysqldb import MySQL
 
 # Be the main frame for all applications
 # Loads static page into one tab
