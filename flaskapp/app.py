@@ -45,6 +45,8 @@ def consul_template():
         cur = mysql.connection.cursor()
         cur.execute("SELECT CURRENT_USER()")
         mysql.connection.commit()
+        data = cursor.fetchone()
+        context=json.oad(data)
         cur.close()
     except Exception as e:
         print("JSON Input file {} missing".format(context_file))
