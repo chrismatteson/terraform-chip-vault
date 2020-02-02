@@ -93,7 +93,7 @@ resource "aws_instance" "web" {
   user_data = <<EOF
 sudo apt-get update -y
 sudo apt-get install -y python3-flask
-git clone https://github.com/chrismatteson/terraform-chip-vault
+sudo git clone https://github.com/chrismatteson/terraform-chip-vault
 cd terraform-chip-vault/flaskapp
 python3 app.py
 EOF

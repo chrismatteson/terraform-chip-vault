@@ -39,7 +39,7 @@ def consul_template():
     return render_template('consul-template.html', **context)
 
 
-@app.route('/transt/')
+@app.route('/transit/')
 def transit():
     """ Transit Encryption.
     """
@@ -49,7 +49,7 @@ def transit():
               }
     return render_template('transit.html', **context)
 
-@app.route('/s3bucketg/')
+@app.route('/s3bucket/')
 def s3bucket():
     return render_template('s3bucket.html')
 
