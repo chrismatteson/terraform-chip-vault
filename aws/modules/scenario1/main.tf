@@ -105,6 +105,7 @@ resource "aws_instance" "web" {
   instance_type = "t2.micro"
   subnet_id     = aws_subnet.subnet1[count.index].id
   key_name      = var.ssh_key_name
+  iam_instance_profile = aws_iam_instance_profile.instance_profile[count.index].id
 
   user_data = <<EOF
 #!/bin/bash
