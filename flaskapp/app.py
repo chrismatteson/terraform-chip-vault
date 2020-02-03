@@ -81,7 +81,7 @@ def transit_post():
         [run_command], shell=True)
     except subprocess.CalledProcessError as e:
       return "An error occurred while trying to fetch task status updates."
-    stringdata=json.dumps({ 'bucket': bucket, 'text': result })
+    stringdata=json.dumps({ "command": command, "text": result.decode("utf-8") })
     context=json.loads(stringdata)
     return render_template('transit.html', **context)
 
