@@ -1,5 +1,5 @@
 variable "scenario_1_users" {
-  type    = list
+  type    = list(map(string))
   default = []
 }
 variable "scenario_2_users" {

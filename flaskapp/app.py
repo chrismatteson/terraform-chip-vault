@@ -136,8 +136,8 @@ def s3bucket_post():
         response = client.delete_object(
     		Bucket='string',
     		Key='string')
-	stringdata=json.dumps({ 'bucket': bucket, 'files': 'deleted' })
-	context=json.loads(stringdata)
+        stringdata=json.dumps({ 'bucket': bucket, 'files': 'deleted' })
+        context=json.loads(stringdata)
     else:
         print('Command is not supported')
 
