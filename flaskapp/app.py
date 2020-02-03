@@ -41,17 +41,19 @@ def consul_template():
     try:
         with app.open_resource(context_file, 'r') as IF:
             context=json.load(IF)
-        db = pymysql.connect("localhost","foo","foobarbaz","USER" )
-        cursor = db.cursor()
-        cursor.execute("SELECT CURRENT_USER()")
-        data = cursor.fetchone()
-        print(data)
-        context=json.load(data)
-        cur.close()
+            db = pymysql.connect(context['hostname'],context['username'],context['password'] )
+            cursor = db.cursor()
+            cursor.execute("select user, authentication_string, host from mysql.user;")
+            data = [dict((cursor.description[i][0], value) \
+                for i, value in enumerate(row)) for row in cursor.fetchall()]
+            print(data)
+            stringdata=json.dumps({"mysqlusertable": data })
+            jsondata=json.loads(stringdata)
+            result={**context,**jsondata}
+            cursor.close()
     except Exception as e:
-        print("JSON Input file {} missing".format(context_file))
         print(e)
-    return render_template('consul-template.html', **context)
+    return render_template('consul-template.html', **result)
 
 
 @app.route('/transit/')
@@ -72,8 +74,21 @@ def transit_post():
                'img_width'  : config.img_width,
                'img_height' : config.img_height,
               }
-    text=request.form['text']
+    bucket=request.form['bucket']
+    key=request.form['key']
     command=request.form['command']
+    if command = 'ls':
+        print('Command is ls')
+        my_bucket = s3.Bucket(bucket)
+        files = []
+        for file in my_bucket.objects.all():
+            files.append(file.key)
+    elif command = 'get':
+        print('Command is get')
+    elif command = 'rm':
+        print('Command is rm')
+    else:
+        print('Command is not supported')
     run_command = "./vaulthook.sh {} {}".format(command, text)
     try:
       result = subprocess.check_output(
@@ -81,20 +96,14 @@ def transit_post():
     except subprocess.CalledProcessError as e:
       return "An error occurred while trying to fetch task status updates."
     return result
+
 @app.route('/s3bucket/')
 def s3bucket():
-    return render_template('s3bucket.html')
+    """ s3 Bucket Dynamic Secerts.
+    """
+    
 
-@app.route('/img/<service>')
-def get_image(service):
-    """Proxy for returning an image via a backend service.   
-    Image source for Connect proxies returns a localhost which will
-    cause the browser to try to retrieve locally."""
-    address = config.service[service]['upstream']
-    response = requests.get(address) 
-    image = io.BytesIO(response.content)
-    mimetype = response.headers['Content-Type']
-    return send_file(image, mimetype=mimetype, cache_timeout=-1)
+    return render_template('s3bucket.html')
 
 
 class Upstream:

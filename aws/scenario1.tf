@@ -117,9 +117,45 @@ sudo apt-get update -y
 sudo apt-get install -y python3-flask
 sudo apt-get install -y python3-pandas
 sudo apt-get install -y python3-pymysql
+
+sudo useradd flask
+sudo mkdir -p /opt/flask
+sudo chown -R flask:flask /opt/flask
 sudo git clone https://github.com/chrismatteson/terraform-chip-vault
-cd terraform-chip-vault/flaskapp
-python3 app.py
+cp -r terraform-chip-vault/flaskapp/* /opt/flask/
+
+mysqldbcreds=$(cat <<MYSQLDBCREDS
+{
+  "username": "${aws_db_instance.database[count.index].username},"
+  "password": "${aws_db_instance.database[count.index].password},"
+  "hostname": "${aws_db_instance.database[count.index].address}"
+}
+MYSQLDBCREDS
+)
+
+echo -e "$mysqldbcreds" > /opt/flask/mysqldbcreds.json
+
+systemd=$(cat <<SYSTEMD
+[Unit]
+Description=Flask App for CHIP Vault Certification
+After=network.target
+
+[Service]
+User=flask
+WorkingDirectory=/opt/flask
+ExecStart=/usr/bin/python3 app.py
+Restart=always
+
+[Install]
+WantedBy=multi-user.target
+SYSTEMD
+)
+
+echo -e "$systemd" > /etc/systemd/system/flask.service
+
+sudo systemctl daemon-reload
+sudo systemctl enable flask.service
+sudo systemctl restart flask.service
 EOF
 
   tags = merge(
@@ -172,7 +208,7 @@ resource "aws_db_subnet_group" "db_subnet" {
   )
 }
 
-resource "aws_db_instance" "default" {
+resource "aws_db_instance" "database" {
   count                  = length(var.scenario_1_users)
   allocated_storage      = 20
   storage_type           = "gp2"

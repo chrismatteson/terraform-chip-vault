@@ -2,14 +2,45 @@
 {% set active_page = "s3bucket" %}
 
 
-{% block title %}Consul Layer 7 Routing Demo{% endblock  %}
+{% block title %}s3 bucket file explorer{% endblock  %}
 {% block content %}
     <div class="row my-5">
-      <div class="col-sm mx-auto my-auto">
-        <p> This is a consolidated application page for Consul demos </p>
-        <p> This is only meant to be an example of a way to build a demo framework 
+      <div class="col-sm-4 mx-auto my-auto">
       </div>
       <div class="col-sm mx-auto my-auto">
-     </div>
+        <table class="table">
+          <thead>
+            <tr>
+              <th scope="col">Bucket</th>
+              <th scope="col">Files</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <th scope="row">{{ bucket }}</th>
+              <td>{{ files }}</td>
+            </tr>
+            </tr>
+            <tr>
+            </tr>
+            <tr>
+                    <th scope="row">Mysql User Table</th>
+                    <td>{{ mysqlusertable }}</td>
+            </tr>
+          </tbody>
+        </table>
+        <form method="POST" id="s3">
+          Bucket: <input type="text" name="bucket">
+          Key: <input type="text" name="key">
+          <input type="submit" value="Submit">
+        </form>
+        Encrypt/Decrypt:
+        <select name="command" form="s3">
+          <option value="ls">ls</option>
+          <option value="get">get</option>
+          <option value="rm">rm</option>
+        </select>
+      </div>
     </div>
+
 {% endblock %}

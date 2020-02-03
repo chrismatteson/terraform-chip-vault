@@ -18,12 +18,4 @@
         </select>
       </div>
     </div>
-    <div class="row my-5">
-      {% for service in active_services %}
-      <div class="col-sm mx-auto my-auto">
-      <H1>{{ service }}</H1>
-      <img src="/img/{{ service }}" width="{{ img_width }}" height="{{ img_height }}">
-      </div>
-      {% endfor %}
-    </div>
 {% endblock %}
