@@ -1,8 +1,3 @@
-resource "random_id" "s1_project_tag" {
-  count       = length(var.scenario_1_users)
-  byte_length = 4
-}
-
 # Setup customer application
 # Lookup most recent AMI
 data "aws_ami" "latest-image" {
@@ -27,7 +22,7 @@ resource "aws_vpc" "vpc" {
   tags = merge(
     var.tags,
     {
-      "ProjectTag" = random_id.s1_project_tag[count.index].hex
+      "ProjectTag" = var.project_tag[count.index]
     },
   )
 }
@@ -64,7 +59,7 @@ resource "aws_subnet" "subnet1" {
   tags = merge(
     var.tags,
     {
-      "ProjectTag" = random_id.s1_project_tag[count.index].hex
+      "ProjectTag" = var.project_tag[count.index]
     },
   )
 }
@@ -79,7 +74,7 @@ resource "aws_subnet" "subnet2" {
   tags = merge(
     var.tags,
     {
-      "ProjectTag" = random_id.s1_project_tag[count.index].hex
+      "ProjectTag" = var.project_tag[count.index]
     },
   )
 }
@@ -162,14 +157,14 @@ EOF
   tags = merge(
     var.tags,
     {
-      "ProjectTag" = random_id.s1_project_tag[count.index].hex
+      "ProjectTag" = var.project_tag[count.index]
     },
   )
 }
 
 resource "aws_iam_role" "instance_role" {
   count              = length(var.scenario_1_users)
-  name_prefix        = "${random_id.s1_project_tag[count.index].id}-instance-role"
+  name_prefix        = "${var.project_tag[count.index]}-instance-role"
   assume_role_policy = data.aws_iam_policy_document.instance_role.json
 }
 
@@ -187,7 +182,7 @@ data "aws_iam_policy_document" "instance_role" {
 
 resource "aws_iam_instance_profile" "instance_profile" {
   count       = length(var.scenario_1_users)
-  name_prefix = "${random_id.s1_project_tag[count.index].id}-instance_profile"
+  name_prefix = "${var.project_tag[count.index]}-instance_profile"
   role        = aws_iam_role.instance_role[count.index].name
 }
 
@@ -204,7 +199,7 @@ resource "aws_db_subnet_group" "db_subnet" {
   tags = merge(
     var.tags,
     {
-      "ProjectTag" = random_id.s1_project_tag[count.index].hex
+      "ProjectTag" = var.project_tag[count.index]
     },
   )
 }

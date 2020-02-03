@@ -107,18 +107,21 @@ def s3bucket_post():
                 's3',
                 aws_access_key_id=creds['ACCESS_KEY'],
                 aws_secret_access_key=creds['SECRET_KEY'],
-                aws_session_token=creds['SESSION_TOKEN'],
+#                aws_session_token=creds['SESSION_TOKEN'],
             )
+    except Exception as e:
+        print(e)
     bucket=request.form['bucket']
     key=request.form['key']
     command=request.form['command']
     if command == 'ls':
         print('Command is ls')
-        response = client.list_objects(
+        response=client.list_objects(
             Bucket=bucket
+	)
         contents={key:response[key] for key in ['Contents']}
-        stringdata = json.dumps({ 'bucket': bucket, 'files': str(contents) })
-        context = json.loads(stringdata)
+        stringdata=json.dumps({ 'bucket': bucket, 'files': str(contents) })
+        context=json.loads(stringdata)
     elif command == 'get':
         print('Command is get')
         response = client.generate_presigned_url('get_object',
@@ -133,7 +136,7 @@ def s3bucket_post():
         response = client.delete_object(
     		Bucket='string',
     		Key='string')
-	stringdata=json.dumps({ 'bucket': bucket', 'files': 'deleted' })
+	stringdata=json.dumps({ 'bucket': bucket, 'files': 'deleted' })
         context=json.loads(stringdata)
     else:
         print('Command is not supported')
