@@ -117,6 +117,7 @@ sudo apt-get update -y
 sudo apt-get install -y python3-flask
 sudo apt-get install -y python3-pandas
 sudo apt-get install -y python3-pymysql
+sudo apt-get install -y python3-boto3
 
 sudo useradd flask
 sudo mkdir -p /opt/flask

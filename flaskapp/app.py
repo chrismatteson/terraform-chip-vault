@@ -38,6 +38,7 @@ def index():
 @app.route('/consul-template/')
 def consul_template():
     context={}
+    result={}
     context_file='mysqldbcreds.json'
     try:
         with app.open_resource(context_file, 'r') as IF:
@@ -71,10 +72,7 @@ def transit():
 def transit_post():
     """ Transit Encryption.
     """
-    context = {'active_services' : config.active_services,
-               'img_width'  : config.img_width,
-               'img_height' : config.img_height,
-              }
+    context = {}
     text=request.form['text']
     command=request.form['command']
     run_command = "./vaulthook.sh {} {}".format(command, text)
@@ -83,7 +81,9 @@ def transit_post():
         [run_command], shell=True)
     except subprocess.CalledProcessError as e:
       return "An error occurred while trying to fetch task status updates."
-    return result
+    stringdata=json.dumps({ 'bucket': bucket, 'text': result })
+    context=json.loads(stringdata)
+    return render_template('transit.html', **context)
 
 @app.route('/s3bucket/')
 def s3bucket():
@@ -93,7 +93,7 @@ def s3bucket():
                'img_width'  : config.img_width,
                'img_height' : config.img_height,
               }
-    return render_template('transit.html', **context)
+    return render_template('s3bucket.html', **context)
 
 @app.route('/s3bucket/', methods=['POST'])
 def s3bucket_post():

@@ -7,6 +7,20 @@
     <div class="row my-5">
       <div class="col-sm mx-auto my-auto">
         <p> This is a Consul Connect Layer 4 Demo.</p>
+        <table class="table">
+          <thead>
+            <tr>
+              <th scope="col">Command</th>
+              <th scope="col">Text</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <th scope="row">{{ command }}</th>
+              <td>{{ text }}</td>
+            </tr>
+          </tbody>
+        </table>
         <form method="POST" id="transit">
           Text: <input type="text" name="text">
           <input type="submit" value="Submit">
