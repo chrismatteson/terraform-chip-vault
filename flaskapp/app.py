@@ -99,16 +99,24 @@ def s3bucket():
 def s3bucket_post():
     """ s3 Bucket Dynamic Secerts.
     """
+    creds_file='awscreds.json'
+    try:
+        with app.open_resource(creds_file, 'r') as IF:
+            creds=json.load(IF)
+            client = boto3.client(
+                's3',
+                aws_access_key_id=creds['ACCESS_KEY'],
+                aws_secret_access_key=creds['SECRET_KEY'],
+                aws_session_token=creds['SESSION_TOKEN'],
+            )
     bucket=request.form['bucket']
     key=request.form['key']
     command=request.form['command']
     if command == 'ls':
         print('Command is ls')
-        my_bucket = s3.Bucket(bucket)
-        files = []
-        for file in my_bucket.objects.all():
-            files.append(file.key)
-        stringdata = json.dumps({ 'bucket': bucket, 'files': files })
+        response = client.list_objects(
+            Bucket=bucket
+        stringdata = json.dumps({ 'bucket': bucket, 'files': str(response) })
         context = json.loads(stringdata)
     elif command == 'get':
         print('Command is get')
