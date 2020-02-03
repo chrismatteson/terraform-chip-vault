@@ -10,6 +10,7 @@ import io
 import pandas as pd
 import pymysql
 import subprocess
+import boto3
 
 # Be the main frame for all applications
 # Loads static page into one tab
@@ -74,21 +75,8 @@ def transit_post():
                'img_width'  : config.img_width,
                'img_height' : config.img_height,
               }
-    bucket=request.form['bucket']
-    key=request.form['key']
+    text=request.form['text']
     command=request.form['command']
-    if command = 'ls':
-        print('Command is ls')
-        my_bucket = s3.Bucket(bucket)
-        files = []
-        for file in my_bucket.objects.all():
-            files.append(file.key)
-    elif command = 'get':
-        print('Command is get')
-    elif command = 'rm':
-        print('Command is rm')
-    else:
-        print('Command is not supported')
     run_command = "./vaulthook.sh {} {}".format(command, text)
     try:
       result = subprocess.check_output(
@@ -101,9 +89,35 @@ def transit_post():
 def s3bucket():
     """ s3 Bucket Dynamic Secerts.
     """
-    
+    context = {'active_services' : config.active_services,
+               'img_width'  : config.img_width,
+               'img_height' : config.img_height,
+              }
+    return render_template('transit.html', **context)
 
-    return render_template('s3bucket.html')
+@app.route('/s3bucket/', methods=['POST'])
+def s3bucket_post():
+    """ s3 Bucket Dynamic Secerts.
+    """
+    bucket=request.form['bucket']
+    key=request.form['key']
+    command=request.form['command']
+    if command == 'ls':
+        print('Command is ls')
+        my_bucket = s3.Bucket(bucket)
+        files = []
+        for file in my_bucket.objects.all():
+            files.append(file.key)
+        stringdata = json.dumps({ 'bucket': bucket, 'files': files })
+        context = json.loads(stringdata)
+    elif command == 'get':
+        print('Command is get')
+    elif command == 'rm':
+        print('Command is rm')
+    else:
+        print('Command is not supported')
+
+    return render_template('s3bucket.html', **context)
 
 
 class Upstream:

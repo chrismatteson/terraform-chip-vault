@@ -126,8 +126,8 @@ cp -r terraform-chip-vault/flaskapp/* /opt/flask/
 
 mysqldbcreds=$(cat <<MYSQLDBCREDS
 {
-  "username": "${aws_db_instance.database[count.index].username},"
-  "password": "${aws_db_instance.database[count.index].password},"
+  "username": "${aws_db_instance.database[count.index].username}",
+  "password": "${aws_db_instance.database[count.index].password}",
   "hostname": "${aws_db_instance.database[count.index].address}"
 }
 MYSQLDBCREDS
