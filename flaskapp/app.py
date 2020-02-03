@@ -116,12 +116,25 @@ def s3bucket_post():
         print('Command is ls')
         response = client.list_objects(
             Bucket=bucket
-        stringdata = json.dumps({ 'bucket': bucket, 'files': str(response) })
+        contents={key:response[key] for key in ['Contents']}
+        stringdata = json.dumps({ 'bucket': bucket, 'files': str(contents) })
         context = json.loads(stringdata)
     elif command == 'get':
         print('Command is get')
+        response = client.generate_presigned_url('get_object',
+            Params={
+                'Bucket': bucket,
+                'Key': key},
+            ExpiresIn='60')
+        stringdata=json.dumps({ 'bucket': bucket, 'files': response })
+        context=json.loads(stringdata)
     elif command == 'rm':
         print('Command is rm')
+        response = client.delete_object(
+    		Bucket='string',
+    		Key='string')
+	stringdata=json.dumps({ 'bucket': bucket', 'files': 'deleted' })
+        context=json.loads(stringdata)
     else:
         print('Command is not supported')
 
