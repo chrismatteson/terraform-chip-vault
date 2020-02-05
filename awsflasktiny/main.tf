@@ -22,12 +22,11 @@ data "aws_availability_zones" "available" {
 
 
 resource "aws_instance" "web" {
-  count         = length(var.scenario_1_users)
   ami           = data.aws_ami.latest-image.id
   instance_type = "t2.micro"
   subnet_id     = aws_subnet.subnet1[count.index].id
   key_name      = var.ssh_key_name
-  iam_instance_profile = aws_iam_instance_profile.instance_profile[count.index].id
+  iam_instance_profile = aws_iam_instance_profile.instance_profile.id
 
   user_data = <<EOF
 #!/bin/bash
@@ -45,9 +44,9 @@ cp -r terraform-chip-vault/flaskapp/* /opt/flask/
 
 mysqldbcreds=$(cat <<MYSQLDBCREDS
 {
-  "username": "${aws_db_instance.database[count.index].username}",
-  "password": "${aws_db_instance.database[count.index].password}",
-  "hostname": "${aws_db_instance.database[count.index].address}"
+  "username": "${aws_db_instance.database.username}",
+  "password": "${aws_db_instance.database.password}",
+  "hostname": "${aws_db_instance.database.address}"
 }
 MYSQLDBCREDS
 )
@@ -80,14 +79,13 @@ EOF
   tags = merge(
     var.tags,
     {
-      "ProjectTag" = var.project_tag[count.index]
+      "ProjectTag" = var.project_tag
     },
   )
 }
 
 resource "aws_iam_role" "instance_role" {
-  count              = length(var.scenario_1_users)
-  name_prefix        = "${var.project_tag[count.index]}-instance-role"
+  name_prefix        = "${var.project_tag}-instance-role"
   assume_role_policy = data.aws_iam_policy_document.instance_role.json
 }
 
@@ -104,31 +102,27 @@ data "aws_iam_policy_document" "instance_role" {
 }
 
 resource "aws_iam_instance_profile" "instance_profile" {
-  count       = length(var.scenario_1_users)
-  name_prefix = "${var.project_tag[count.index]}-instance_profile"
-  role        = aws_iam_role.instance_role[count.index].name
+  name_prefix = "${var.project_tag}-instance_profile"
+  role        = aws_iam_role.instance_role.name
 }
 
 resource "aws_iam_role_policy_attachment" "SystemsManager" {
-  count      = length(var.scenario_1_users)
-  role       = aws_iam_role.instance_role[count.index].id
+  role       = aws_iam_role.instance_role.id
   policy_arn = "arn:aws:iam::aws:policy/AmazonSSMManagedInstanceCore"
 }
 
 resource "aws_db_subnet_group" "db_subnet" {
-  count      = length(var.scenario_1_users)
   subnet_ids = [aws_subnet.subnet1[count.index].id, aws_subnet.subnet2[count.index].id]
 
   tags = merge(
     var.tags,
     {
-      "ProjectTag" = var.project_tag[count.index]
+      "ProjectTag" = var.project_tag
     },
   )
 }
 
 resource "aws_db_instance" "database" {
-  count                  = length(var.scenario_1_users)
   allocated_storage      = 20
   storage_type           = "gp2"
   engine                 = "mysql"
