@@ -187,6 +187,27 @@ module "scenario_1_ap" {
   }
 }
 
+resource "aws_directory_service_directory" "s1-ad" {
+  provider = aws.us-west-1
+  count    = length(var.scenario_1_users)
+  name     = "corp.${random_id.s1_project_tag[count.index].hex}.com"
+  password = "SuperSecretPassw0rd"
+  edition  = "Standard"
+  type     = "MicrosoftAD"
+
+  vpc_settings {
+    vpc_id     = module.scenario_1_west.vpc_id[count.index]
+    subnet_ids = [module.scenario_1_west.subnet1[count.index], module.scenario_1_west.subnet2[count.index]]
+  }
+
+  tags = merge(
+    var.tags,
+    {
+      "ProjectTag" = random_id.s1_project_tag[count.index].hex
+    },
+  )
+}
+
 # Scenario 2
 resource "random_id" "s2_project_tag" {
   count       = length(var.scenario_2_users)
@@ -244,6 +265,27 @@ module "scenario_2_ap" {
   providers = {
     aws = aws.ap-southeast-1
   }
+}
+
+resource "aws_directory_service_directory" "s2-ad" {
+  provider = aws.us-east-2
+  count    = length(var.scenario_2_users)
+  name     = "corp.${random_id.s2_project_tag[count.index].hex}.com"
+  password = "SuperSecretPassw0rd"
+  edition  = "Standard"
+  type     = "MicrosoftAD"
+
+  vpc_settings {
+    vpc_id     = module.scenario_2_east.vpc_id[count.index]
+    subnet_ids = [module.scenario_2_east.subnet1[count.index], module.scenario_2_east.subnet2[count.index]]
+  }
+
+  tags = merge(
+    var.tags,
+    {
+      "ProjectTag" = random_id.s2_project_tag[count.index].hex
+    },
+  )
 }
 
 # Scenario 3
@@ -304,6 +346,28 @@ module "scenario_3_ap" {
     aws = aws.ap-southeast-1
   }
 }
+
+resource "aws_directory_service_directory" "s3-ad" {
+  provider = aws.us-east-1
+  count    = length(var.scenario_3_users)
+  name     = "corp.${random_id.s3_project_tag[count.index].hex}.com"
+  password = "SuperSecretPassw0rd"
+  edition  = "Standard"
+  type     = "MicrosoftAD"
+
+  vpc_settings {
+    vpc_id     = module.scenario_3_east.vpc_id[count.index]
+    subnet_ids = [module.scenario_3_east.subnet1[count.index], module.scenario_3_east.subnet2[count.index]]
+  }
+
+  tags = merge(
+    var.tags,
+    {
+      "ProjectTag" = random_id.s1_project_tag[count.index].hex
+    },
+  )
+}
+
 # Scenario 4
 resource "random_id" "s4_project_tag" {
   count       = length(var.scenario_4_users)
@@ -329,7 +393,6 @@ module "scenario_4_west_dr" {
     aws = aws.us-west-2
   }
 }
-
 
 module "scenario_4_eu" {
   source           = "./modules/scenario4"
@@ -363,6 +426,27 @@ module "scenario_4_ap" {
   }
 }
 
+resource "aws_directory_service_directory" "s4-ad" {
+  provider = aws.ca-central-1
+  count    = length(var.scenario_4_users)
+  name     = "corp.${random_id.s4_project_tag[count.index].hex}.com"
+  password = "SuperSecretPassw0rd"
+  edition  = "Standard"
+  type     = "MicrosoftAD"
+
+  vpc_settings {
+    vpc_id     = module.scenario_4_ca_central.vpc_id[count.index]
+    subnet_ids = [module.scenario_4_ca_central.subnet1[count.index], module.scenario_4_ca_central.subnet2[count.index]]
+  }
+
+  tags = merge(
+    var.tags,
+    {
+      "ProjectTag" = random_id.s4_project_tag[count.index].hex
+    },
+  )
+}
+
 # Scenario 5
 resource "random_id" "s5_project_tag" {
   count       = length(var.scenario_5_users)
@@ -389,7 +473,6 @@ module "scenario_5_west_dr" {
   }
 }
 
-
 module "scenario_5_eu" {
   source           = "./modules/scenario5"
   project_tag      = random_id.s5_project_tag[*].hex
@@ -399,7 +482,6 @@ module "scenario_5_eu" {
     aws = aws.eu-central-1
   }
 }
-
 
 module "scenario_5_eu_dr" {
   source           = "./modules/scenario5"
@@ -411,7 +493,6 @@ module "scenario_5_eu_dr" {
   }
 }
 
-
 module "scenario_5_ap" {
   source           = "./modules/scenario5"
   project_tag      = random_id.s5_project_tag[*].hex
@@ -420,4 +501,25 @@ module "scenario_5_ap" {
   providers = {
     aws = aws.ap-southeast-1
   }
+}
+
+resource "aws_directory_service_directory" "s5-ad" {
+  provider = aws.sa-east-1
+  count    = length(var.scenario_5_users)
+  name     = "corp.${random_id.s5_project_tag[count.index].hex}.com"
+  password = "SuperSecretPassw0rd"
+  edition  = "Standard"
+  type     = "MicrosoftAD"
+
+  vpc_settings {
+    vpc_id     = module.scenario_5_sa_east.vpc_id[count.index]
+    subnet_ids = [module.scenario_5_sa_east.subnet1[count.index], module.scenario_5_sa_east.subnet2[count.index]]
+  }
+
+  tags = merge(
+    var.tags,
+    {
+      "ProjectTag" = random_id.s5_project_tag[count.index].hex
+    },
+  )
 }
