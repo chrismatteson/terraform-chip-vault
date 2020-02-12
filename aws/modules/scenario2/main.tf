@@ -17,7 +17,7 @@ data "aws_ami" "latest-image" {
 
 resource "aws_vpc" "vpc" {
   count      = length(var.scenario_1_users)
-  cidr_block = "10.0.0.0/16"
+  cidr_block = "172.16.0.0/16"
 
   tags = merge(
     var.tags,
@@ -53,7 +53,7 @@ resource "aws_subnet" "subnet1" {
   count                   = length(var.scenario_1_users)
   vpc_id                  = aws_vpc.vpc[count.index].id
   availability_zone       = data.aws_availability_zones.available.names[0]
-  cidr_block              = "10.0.1.0/24"
+  cidr_block              = "172.16.1.0/24"
   map_public_ip_on_launch = true
 
   tags = merge(
@@ -68,7 +68,7 @@ resource "aws_subnet" "subnet2" {
   count                   = length(var.scenario_1_users)
   vpc_id                  = aws_vpc.vpc[count.index].id
   availability_zone       = data.aws_availability_zones.available.names[1]
-  cidr_block              = "10.0.2.0/24"
+  cidr_block              = "172.16.2.0/24"
   map_public_ip_on_launch = true
 
   tags = merge(

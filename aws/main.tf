@@ -101,32 +101,51 @@ resource "aws_iam_user_login_profile" "s1_user" {
 resource "aws_iam_user_login_profile" "s2_user" {
   count   = length(var.scenario_2_users)
   user    = aws_iam_user.s2_user[count.index].name
-  pgp_key = "keybase:chrismatteson"
+  pgp_key = element(var.scenario_2_users, count.index).pgpkey
 }
 
 resource "aws_iam_user_login_profile" "s3_user" {
   count   = length(var.scenario_3_users)
   user    = aws_iam_user.s3_user[count.index].name
-  pgp_key = "keybase:chrismatteson"
+  pgp_key = element(var.scenario_3_users, count.index).pgpkey
 }
 
 resource "aws_iam_user_login_profile" "s4_user" {
   count   = length(var.scenario_4_users)
   user    = aws_iam_user.s4_user[count.index].name
-  pgp_key = "keybase:chrismatteson"
+  pgp_key = element(var.scenario_4_users, count.index).pgpkey
 }
 
 resource "aws_iam_user_login_profile" "s5_user" {
   count   = length(var.scenario_5_users)
   user    = aws_iam_user.s5_user[count.index].name
-  pgp_key = "keybase:chrismatteson"
+  pgp_key = element(var.scenario_5_users, count.index).pgpkey
 }
 
-# Fix this later if it's important
-#data "external" "decrypt" {
-#  count = length(var.scenario_1_users)
-#  program = ["echo", aws_iam_user_login_profile.s1_user[count.index].encrypted_password, "| base64 --decode | keybase pgp decrypt"]
-#}
+resource "aws_iam_access_key" "s1_user" {
+  count   = length(var.scenario_1_users)
+  user    = aws_iam_user.s1_user[count.index].name
+}
+
+resource "aws_iam_access_key" "s2_user" {
+  count   = length(var.scenario_2_users)
+  user    = aws_iam_user.s2_user[count.index].name
+}
+
+resource "aws_iam_access_key" "s3_user" {
+  count   = length(var.scenario_3_users)
+  user    = aws_iam_user.s3_user[count.index].name
+}
+
+resource "aws_iam_access_key" "s4_user" {
+  count   = length(var.scenario_4_users)
+  user    = aws_iam_user.s4_user[count.index].name
+}
+
+resource "aws_iam_access_key" "s5_user" {
+  count   = length(var.scenario_5_users)
+  user    = aws_iam_user.s5_user[count.index].name
+}
 
 # Scenario 1
 resource "random_id" "s1_project_tag" {
@@ -144,17 +163,6 @@ module "scenario_1_west" {
   }
 }
 
-module "scenario_1_west_dr" {
-  source           = "./modules/scenario1"
-  project_tag      = random_id.s1_project_tag[*].hex
-  scenario_1_users = var.scenario_1_users
-  ssh_key_name     = var.ssh_key_name
-  providers = {
-    aws = aws.us-west-2
-  }
-}
-
-
 module "scenario_1_eu" {
   source           = "./modules/scenario1"
   project_tag      = random_id.s1_project_tag[*].hex
@@ -162,28 +170,6 @@ module "scenario_1_eu" {
   ssh_key_name     = var.ssh_key_name
   providers = {
     aws = aws.eu-central-1
-  }
-}
-
-
-module "scenario_1_eu_dr" {
-  source           = "./modules/scenario1"
-  project_tag      = random_id.s1_project_tag[*].hex
-  scenario_1_users = var.scenario_1_users
-  ssh_key_name     = var.ssh_key_name
-  providers = {
-    aws = aws.eu-west-1
-  }
-}
-
-
-module "scenario_1_ap" {
-  source           = "./modules/scenario1"
-  project_tag      = random_id.s1_project_tag[*].hex
-  scenario_1_users = var.scenario_1_users
-  ssh_key_name     = var.ssh_key_name
-  providers = {
-    aws = aws.ap-southeast-1
   }
 }
 
@@ -224,17 +210,6 @@ module "scenario_2_east" {
   }
 }
 
-module "scenario_2_west_dr" {
-  source           = "./modules/scenario2"
-  project_tag      = random_id.s2_project_tag[*].hex
-  scenario_1_users = var.scenario_2_users
-  ssh_key_name     = var.ssh_key_name
-  providers = {
-    aws = aws.us-west-2
-  }
-}
-
-
 module "scenario_2_eu" {
   source           = "./modules/scenario2"
   project_tag      = random_id.s2_project_tag[*].hex
@@ -242,28 +217,6 @@ module "scenario_2_eu" {
   ssh_key_name     = var.ssh_key_name
   providers = {
     aws = aws.eu-central-1
-  }
-}
-
-
-module "scenario_2_eu_dr" {
-  source           = "./modules/scenario2"
-  project_tag      = random_id.s2_project_tag[*].hex
-  scenario_1_users = var.scenario_2_users
-  ssh_key_name     = var.ssh_key_name
-  providers = {
-    aws = aws.eu-west-1
-  }
-}
-
-
-module "scenario_2_ap" {
-  source           = "./modules/scenario2"
-  project_tag      = random_id.s2_project_tag[*].hex
-  scenario_1_users = var.scenario_2_users
-  ssh_key_name     = var.ssh_key_name
-  providers = {
-    aws = aws.ap-southeast-1
   }
 }
 
@@ -304,17 +257,6 @@ module "scenario_3_east" {
   }
 }
 
-module "scenario_3_west_dr" {
-  source           = "./modules/scenario3"
-  project_tag      = random_id.s3_project_tag[*].hex
-  scenario_1_users = var.scenario_3_users
-  ssh_key_name     = var.ssh_key_name
-  providers = {
-    aws = aws.us-west-2
-  }
-}
-
-
 module "scenario_3_eu" {
   source           = "./modules/scenario3"
   project_tag      = random_id.s3_project_tag[*].hex
@@ -322,28 +264,6 @@ module "scenario_3_eu" {
   ssh_key_name     = var.ssh_key_name
   providers = {
     aws = aws.eu-central-1
-  }
-}
-
-
-module "scenario_3_eu_dr" {
-  source           = "./modules/scenario3"
-  project_tag      = random_id.s3_project_tag[*].hex
-  scenario_1_users = var.scenario_3_users
-  ssh_key_name     = var.ssh_key_name
-  providers = {
-    aws = aws.eu-west-1
-  }
-}
-
-
-module "scenario_3_ap" {
-  source           = "./modules/scenario3"
-  project_tag      = random_id.s3_project_tag[*].hex
-  scenario_1_users = var.scenario_3_users
-  ssh_key_name     = var.ssh_key_name
-  providers = {
-    aws = aws.ap-southeast-1
   }
 }
 
@@ -384,16 +304,6 @@ module "scenario_4_ca_central" {
   }
 }
 
-module "scenario_4_west_dr" {
-  source           = "./modules/scenario4"
-  project_tag      = random_id.s4_project_tag[*].hex
-  scenario_1_users = var.scenario_4_users
-  ssh_key_name     = var.ssh_key_name
-  providers = {
-    aws = aws.us-west-2
-  }
-}
-
 module "scenario_4_eu" {
   source           = "./modules/scenario4"
   project_tag      = random_id.s4_project_tag[*].hex
@@ -401,28 +311,6 @@ module "scenario_4_eu" {
   ssh_key_name     = var.ssh_key_name
   providers = {
     aws = aws.eu-central-1
-  }
-}
-
-
-module "scenario_4_eu_dr" {
-  source           = "./modules/scenario4"
-  project_tag      = random_id.s4_project_tag[*].hex
-  scenario_1_users = var.scenario_4_users
-  ssh_key_name     = var.ssh_key_name
-  providers = {
-    aws = aws.eu-west-1
-  }
-}
-
-
-module "scenario_4_ap" {
-  source           = "./modules/scenario1"
-  project_tag      = random_id.s4_project_tag[*].hex
-  scenario_1_users = var.scenario_4_users
-  ssh_key_name     = var.ssh_key_name
-  providers = {
-    aws = aws.ap-southeast-1
   }
 }
 
@@ -453,23 +341,13 @@ resource "random_id" "s5_project_tag" {
   byte_length = 4
 }
 
-module "scenario_5_sa_east" {
+module "scenario_5_us_east" {
   source           = "./modules/scenario5"
   project_tag      = random_id.s5_project_tag[*].hex
   scenario_1_users = var.scenario_5_users
   ssh_key_name     = var.ssh_key_name
   providers = {
-    aws = aws.sa-east-1
-  }
-}
-
-module "scenario_5_west_dr" {
-  source           = "./modules/scenario5"
-  project_tag      = random_id.s5_project_tag[*].hex
-  scenario_1_users = var.scenario_5_users
-  ssh_key_name     = var.ssh_key_name
-  providers = {
-    aws = aws.us-west-2
+    aws = aws.us-east-1
   }
 }
 
@@ -483,28 +361,8 @@ module "scenario_5_eu" {
   }
 }
 
-module "scenario_5_eu_dr" {
-  source           = "./modules/scenario5"
-  project_tag      = random_id.s5_project_tag[*].hex
-  scenario_1_users = var.scenario_5_users
-  ssh_key_name     = var.ssh_key_name
-  providers = {
-    aws = aws.eu-west-1
-  }
-}
-
-module "scenario_5_ap" {
-  source           = "./modules/scenario5"
-  project_tag      = random_id.s5_project_tag[*].hex
-  scenario_1_users = var.scenario_5_users
-  ssh_key_name     = var.ssh_key_name
-  providers = {
-    aws = aws.ap-southeast-1
-  }
-}
-
 resource "aws_directory_service_directory" "s5-ad" {
-  provider = aws.sa-east-1
+  provider = aws.us-east-1
   count    = length(var.scenario_5_users)
   name     = "corp.${random_id.s5_project_tag[count.index].hex}.com"
   password = "SuperSecretPassw0rd"
@@ -512,8 +370,8 @@ resource "aws_directory_service_directory" "s5-ad" {
   type     = "MicrosoftAD"
 
   vpc_settings {
-    vpc_id     = module.scenario_5_sa_east.vpc_id[count.index]
-    subnet_ids = [module.scenario_5_sa_east.subnet1[count.index], module.scenario_5_sa_east.subnet2[count.index]]
+    vpc_id     = module.scenario_5_us_east.vpc_id[count.index]
+    subnet_ids = [module.scenario_5_us_east.subnet1[count.index], module.scenario_5_us_east.subnet2[count.index]]
   }
 
   tags = merge(
