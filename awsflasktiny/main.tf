@@ -15,16 +15,86 @@ data "aws_ami" "latest-image" {
   }
 }
 
+resource "aws_vpc" "vpc" {
+  cidr_block = "172.16.0.0/16"
+
+  tags = merge(
+    var.tags,
+    {
+      "ProjectTag" = var.project_tag
+    },
+  )
+}
+
+resource "aws_internet_gateway" "gw" {
+  vpc_id = aws_vpc.vpc.id
+}
+
+resource "aws_default_route_table" "table" {
+  default_route_table_id = aws_vpc.vpc.default_route_table_id
+}
+
+resource "aws_route" "public_internet_gateway" {
+  route_table_id         = aws_default_route_table.table.id
+  destination_cidr_block = "0.0.0.0/0"
+  gateway_id             = aws_internet_gateway.gw.id
+}
 
 data "aws_availability_zones" "available" {
   state = "available"
+}
+
+resource "aws_subnet" "subnet1" {
+  vpc_id                  = aws_vpc.vpc.id
+  availability_zone       = data.aws_availability_zones.available.names[0]
+  cidr_block              = "172.16.1.0/24"
+  map_public_ip_on_launch = true
+
+  tags = merge(
+    var.tags,
+    {
+      "ProjectTag" = var.project_tag
+    },
+  )
+}
+
+resource "aws_subnet" "subnet2" {
+  vpc_id                  = aws_vpc.vpc.id
+  availability_zone       = data.aws_availability_zones.available.names[1]
+  cidr_block              = "172.16.2.0/24"
+  map_public_ip_on_launch = true
+
+  tags = merge(
+    var.tags,
+    {
+      "ProjectTag" = var.project_tag
+    },
+  )
+}
+
+resource "aws_default_security_group" "vpc_default" {
+  vpc_id = aws_vpc.vpc.id
+
+  ingress {
+    from_port   = 0
+    to_port     = 0
+    protocol    = -1
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+
+  egress {
+    from_port   = 0
+    to_port     = 0
+    protocol    = "-1"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
 }
 
 
 resource "aws_instance" "web" {
   ami           = data.aws_ami.latest-image.id
   instance_type = "t2.micro"
-  subnet_id     = aws_subnet.subnet1[count.index].id
+  subnet_id     = aws_subnet.subnet1.id
   key_name      = var.ssh_key_name
   iam_instance_profile = aws_iam_instance_profile.instance_profile.id
 
@@ -112,7 +182,7 @@ resource "aws_iam_role_policy_attachment" "SystemsManager" {
 }
 
 resource "aws_db_subnet_group" "db_subnet" {
-  subnet_ids = [aws_subnet.subnet1[count.index].id, aws_subnet.subnet2[count.index].id]
+  subnet_ids = [aws_subnet.subnet1.id, aws_subnet.subnet2.id]
 
   tags = merge(
     var.tags,
@@ -133,6 +203,6 @@ resource "aws_db_instance" "database" {
   password               = "foobarbaz"
   parameter_group_name   = "default.mysql5.7"
   skip_final_snapshot    = true
-  db_subnet_group_name   = aws_db_subnet_group.db_subnet[count.index].id
-  vpc_security_group_ids = [aws_vpc.vpc[count.index].default_security_group_id]
+  db_subnet_group_name   = aws_db_subnet_group.db_subnet.id
+  vpc_security_group_ids = [aws_vpc.vpc.default_security_group_id]
 }
