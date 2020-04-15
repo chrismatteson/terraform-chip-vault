@@ -1,3 +1,8 @@
+# Setup provider
+provider "aws" {
+  region = "us-east-1"
+}
+
 # Setup customer application
 # Lookup most recent AMI
 data "aws_ami" "latest-image" {
