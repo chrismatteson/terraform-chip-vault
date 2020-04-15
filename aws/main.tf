@@ -175,7 +175,7 @@ module "scenario_1_eu" {
 
 resource "aws_directory_service_directory" "s1-ad" {
   provider = aws.us-west-1
-  count    = length(var.scenario_1_users)
+  count    = 0 #length(var.scenario_1_users)
   name     = "corp.${random_id.s1_project_tag[count.index].hex}.com"
   password = "SuperSecretPassw0rd"
   edition  = "Standard"
@@ -222,7 +222,7 @@ module "scenario_2_eu" {
 
 resource "aws_directory_service_directory" "s2-ad" {
   provider = aws.us-east-2
-  count    = length(var.scenario_2_users)
+  count    = 0 #length(var.scenario_2_users)
   name     = "corp.${random_id.s2_project_tag[count.index].hex}.com"
   password = "SuperSecretPassw0rd"
   edition  = "Standard"
@@ -269,7 +269,7 @@ module "scenario_3_eu" {
 
 resource "aws_directory_service_directory" "s3-ad" {
   provider = aws.us-east-1
-  count    = length(var.scenario_3_users)
+  count    = 0 #length(var.scenario_3_users)
   name     = "corp.${random_id.s3_project_tag[count.index].hex}.com"
   password = "SuperSecretPassw0rd"
   edition  = "Standard"
@@ -316,7 +316,7 @@ module "scenario_4_eu" {
 
 resource "aws_directory_service_directory" "s4-ad" {
   provider = aws.ca-central-1
-  count    = length(var.scenario_4_users)
+  count    = 0 #length(var.scenario_4_users)
   name     = "corp.${random_id.s4_project_tag[count.index].hex}.com"
   password = "SuperSecretPassw0rd"
   edition  = "Standard"
@@ -363,7 +363,7 @@ module "scenario_5_eu" {
 
 resource "aws_directory_service_directory" "s5-ad" {
   provider = aws.us-east-1
-  count    = length(var.scenario_5_users)
+  count    = 0 #length(var.scenario_5_users)
   name     = "corp.${random_id.s5_project_tag[count.index].hex}.com"
   password = "SuperSecretPassw0rd"
   edition  = "Standard"

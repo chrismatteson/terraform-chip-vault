@@ -2,18 +2,26 @@ output "project_tag" {
   value = var.project_tag
 }
 
-output "public_ip" {
-  value = aws_instance.web.public_ip
+output "us_instance_public_ip" {
+  value = "http://${aws_instance.us-web.public_ip}:8000"
 }
 
-output "vpc_id" {
-  value = aws_vpc.vpc.id
+output "us_instance_vpc_id" {
+  value = aws_vpc.us-vpc.id
 }
 
-output "subnet1" {
-  value = aws_subnet.subnet1.id
+output "us_instance_availability_zone" {
+  value = aws_instance.us-web.availability_zone
 }
 
-output "subnet2" {
-  value = aws_subnet.subnet2.id
+output "eu_instance_public_ip" {
+  value = "http://${aws_instance.eu-web.public_ip}:8000"
+}
+
+output "eu_instance_vpc_id" {
+  value = aws_vpc.eu-vpc.id
+}
+
+output "eu_instance_availability_zone" {
+  value = aws_instance.eu-web.availability_zone
 }
