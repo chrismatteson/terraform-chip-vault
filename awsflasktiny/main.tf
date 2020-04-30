@@ -480,16 +480,19 @@ data "aws_route_tables" "vpc3" {
 
 data "aws_subnet_ids" "vpc1" {
   provider = aws.vpc1
+  count    = var.vpc1_id == "" ? 0 : 1
   vpc_id   = var.vpc1_id
 }
 
 data "aws_subnet_ids" "vpc2" {
   provider = aws.vpc2
+  count    = var.vpc2_id == "" ? 0 : 1
   vpc_id   = var.vpc2_id
 }
 
 data "aws_subnet_ids" "vpc3" {
   provider = aws.vpc3
+  count    = var.vpc3_id == "" ? 0 : 1
   vpc_id   = var.vpc3_id
 }
 
