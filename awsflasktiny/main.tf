@@ -554,10 +554,22 @@ resource "aws_route" "vpc3" {
   vpc_peering_connection_id = count.index >= length(aws_subnet.us-subnet.*.id) ? aws_vpc_peering_connection.vpc3[0].id : aws_vpc_peering_connection.vpc3[1].id
 }
 
-resource "aws_default_security_group" "vpc1" {
-  count    = var.vpc1_id == "" ? 0 : 1
-  provider = aws.vpc1
-  vpc_id   = var.vpc1_id
+data "aws_security_groups" "vpc1" {
+  count = var.vpc1_id == "" ? 0 : 1
+  filter {
+    name   = "group-name"
+    values = ["default"]
+  }
+
+  filter {
+    name   = "vpc-id"
+    values = ["${var.vpc1_id}"]
+  }
+}
+
+data "aws_security_group" "vpc1" {
+  count = var.vpc1_id == "" ? 0 : 1
+  id    = data.aws_security_groups.vpc1[0].ids[0]
 }
 
 resource "aws_security_group_rule" "vpc1" {
@@ -568,13 +580,25 @@ resource "aws_security_group_rule" "vpc1" {
   to_port           = 8200
   protocol          = "tcp"
   cidr_blocks       = concat(aws_subnet.us-subnet.*.cidr_block, aws_subnet.eu-subnet.*.cidr_block)
-  security_group_id = aws_default_security_group.vpc1[0].id
+  security_group_id = data.aws_security_group.vpc1[0].id
 }
 
-resource "aws_default_security_group" "vpc2" {
-  count    = var.vpc2_id == "" ? 0 : 1
-  provider = aws.vpc2
-  vpc_id   = var.vpc2_id
+data "aws_security_groups" "vpc2" {
+  count = var.vpc2_id == "" ? 0 : 1
+  filter {
+    name   = "group-name"
+    values = ["default"]
+  }
+
+  filter {
+    name   = "vpc-id"
+    values = ["${var.vpc2_id}"]
+  }
+}
+
+data "aws_security_group" "vpc2" {
+  count = var.vpc2_id == "" ? 0 : 1
+  id    = data.aws_security_groups.vpc2[0].ids[0]
 }
 
 resource "aws_security_group_rule" "vpc2" {
@@ -585,13 +609,25 @@ resource "aws_security_group_rule" "vpc2" {
   to_port           = 8200
   protocol          = "tcp"
   cidr_blocks       = concat(aws_subnet.us-subnet.*.cidr_block, aws_subnet.eu-subnet.*.cidr_block)
-  security_group_id = aws_default_security_group.vpc2[0].id
+  security_group_id = data.aws_security_group.vpc2[0].id
 }
 
-resource "aws_default_security_group" "vpc3" {
-  count    = var.vpc3_id == "" ? 0 : 1
-  provider = aws.vpc3
-  vpc_id   = var.vpc3_id
+data "aws_security_groups" "vpc3" {
+  count = var.vpc3_id == "" ? 0 : 1
+  filter {
+    name   = "group-name"
+    values = ["default"]
+  }
+
+  filter {
+    name   = "vpc-id"
+    values = ["${var.vpc3_id}"]
+  }
+}
+
+data "aws_security_group" "vpc3" {
+  count = var.vpc3_id == "" ? 0 : 1
+  id    = data.aws_security_groups.vpc3[0].ids[0]
 }
 
 resource "aws_security_group_rule" "vpc3" {
@@ -602,5 +638,5 @@ resource "aws_security_group_rule" "vpc3" {
   to_port           = 8200
   protocol          = "tcp"
   cidr_blocks       = concat(aws_subnet.us-subnet.*.cidr_block, aws_subnet.eu-subnet.*.cidr_block)
-  security_group_id = aws_default_security_group.vpc3[0].id
+  security_group_id = data.aws_security_group.vpc3[0].id
 }
