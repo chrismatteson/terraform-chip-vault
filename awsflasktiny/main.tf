@@ -556,6 +556,7 @@ resource "aws_route" "vpc3" {
 
 data "aws_security_groups" "vpc1" {
   count = var.vpc1_id == "" ? 0 : 1
+  provider          = aws.vpc1
   filter {
     name   = "group-name"
     values = ["default"]
@@ -569,6 +570,7 @@ data "aws_security_groups" "vpc1" {
 
 data "aws_security_group" "vpc1" {
   count = var.vpc1_id == "" ? 0 : 1
+  provider          = aws.vpc1
   id    = data.aws_security_groups.vpc1[0].ids[0]
 }
 
@@ -585,6 +587,7 @@ resource "aws_security_group_rule" "vpc1" {
 
 data "aws_security_groups" "vpc2" {
   count = var.vpc2_id == "" ? 0 : 1
+  provider          = aws.vpc2
   filter {
     name   = "group-name"
     values = ["default"]
@@ -598,6 +601,7 @@ data "aws_security_groups" "vpc2" {
 
 data "aws_security_group" "vpc2" {
   count = var.vpc2_id == "" ? 0 : 1
+  provider          = aws.vpc2
   id    = data.aws_security_groups.vpc2[0].ids[0]
 }
 
@@ -614,6 +618,7 @@ resource "aws_security_group_rule" "vpc2" {
 
 data "aws_security_groups" "vpc3" {
   count = var.vpc3_id == "" ? 0 : 1
+  provider          = aws.vpc3
   filter {
     name   = "group-name"
     values = ["default"]
@@ -627,6 +632,7 @@ data "aws_security_groups" "vpc3" {
 
 data "aws_security_group" "vpc3" {
   count = var.vpc3_id == "" ? 0 : 1
+  provider          = aws.vpc3
   id    = data.aws_security_groups.vpc3[0].ids[0]
 }
 
