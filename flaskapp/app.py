@@ -134,8 +134,8 @@ def s3bucket_post():
     elif command == 'rm':
         print('Command is rm')
         response = client.delete_object(
-    		Bucket='string',
-    		Key='string')
+    		Bucket=bucket,
+    		Key=key)
         stringdata=json.dumps({ 'bucket': bucket, 'files': 'deleted' })
         context=json.loads(stringdata)
     else:
