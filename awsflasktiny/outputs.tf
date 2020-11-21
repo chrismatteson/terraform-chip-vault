@@ -34,3 +34,10 @@ output "us_instance_vpc_id" {
   value = aws_vpc.us-vpc.id
 }
 
+output "us_db" {
+  value = aws_db_instance.us-database
+}
+
+output "instance_role" {
+  value =  aws_iam_role.instance-role.arn
+}
